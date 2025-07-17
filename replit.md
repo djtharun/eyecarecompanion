@@ -14,6 +14,10 @@ EyeRest is a React-based web application designed to help users maintain healthy
 ✓ Improved timer state management with automatic save/restore functionality
 ✓ Added PostgreSQL database with comprehensive schema for users, settings, sessions, and statistics
 ✓ Implemented full API endpoints for data persistence and retrieval
+✓ Added exercise video demonstrations with 5 guided routines
+✓ Implemented comprehensive streak tracking and statistics system
+✓ Added advanced sound customization with multiple notification types
+✓ Enhanced timer integration with activity recording and progress tracking
 
 ## User Preferences
 

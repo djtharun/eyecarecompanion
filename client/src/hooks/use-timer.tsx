@@ -7,7 +7,7 @@ export interface TimerState {
   progress: number;
 }
 
-export function useTimer(defaultMinutes: number = 20, storageKey?: string) {
+export function useTimer(defaultMinutes: number = 20, storageKey?: string, onTimerComplete?: () => void) {
   const [state, setState] = useState<TimerState>({
     isRunning: false,
     timeLeft: defaultMinutes * 60,
@@ -83,10 +83,15 @@ export function useTimer(defaultMinutes: number = 20, storageKey?: string) {
             progress: updateProgress(prevState.timeLeft - 1, prevState.totalTime),
           };
       
+      // Call completion callback when timer finishes
+      if (newState.timeLeft === 0 && prevState.timeLeft > 0) {
+        onTimerComplete?.();
+      }
+      
       saveTimerState(newState);
       return newState;
     });
-  }, [updateProgress, saveTimerState]);
+  }, [updateProgress, saveTimerState, onTimerComplete]);
 
   useEffect(() => {
     if (state.isRunning && state.timeLeft > 0) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Eye, UserCheck, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TimerCard } from '@/components/timer-card';
@@ -9,14 +9,39 @@ import { SettingsModal } from '@/components/settings-modal';
 import { useTimer } from '@/hooks/use-timer';
 import { useNotifications } from '@/hooks/use-notifications';
 import { useSettings } from '@/hooks/use-settings';
+import { useStreakTracking } from '@/hooks/use-streak-tracking';
+import { useSoundSettings } from '@/hooks/use-sound-settings';
 
 export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const { settings } = useSettings();
   const { showEyeBreakNotification, showPostureNotification } = useNotifications();
+  const { recordActivity } = useStreakTracking();
+  const { playNotificationSound } = useSoundSettings();
+
+  // Timer completion handlers
+  const handleEyeTimerComplete = useCallback(() => {
+    recordActivity('eye');
+    if (settings.eyeNotifications) {
+      showEyeBreakNotification(settings.soundAlerts);
+    }
+    if (settings.soundAlerts) {
+      playNotificationSound();
+    }
+  }, [recordActivity, settings.eyeNotifications, settings.soundAlerts, showEyeBreakNotification, playNotificationSound]);
+
+  const handlePostureTimerComplete = useCallback(() => {
+    recordActivity('posture');
+    if (settings.postureNotifications) {
+      showPostureNotification(settings.soundAlerts);
+    }
+    if (settings.soundAlerts) {
+      playNotificationSound();
+    }
+  }, [recordActivity, settings.postureNotifications, settings.soundAlerts, showPostureNotification, playNotificationSound]);
   
-  const eyeTimer = useTimer(settings.eyeInterval, 'eyerest-eye-timer');
-  const postureTimer = useTimer(settings.postureInterval, 'eyerest-posture-timer');
+  const eyeTimer = useTimer(settings.eyeInterval, 'eyerest-eye-timer', handleEyeTimerComplete);
+  const postureTimer = useTimer(settings.postureInterval, 'eyerest-posture-timer', handlePostureTimerComplete);
 
   // Update timer intervals when settings change
   useEffect(() => {
@@ -27,36 +52,24 @@ export default function Home() {
     postureTimer.reset(settings.postureInterval);
   }, [settings.postureInterval]);
 
-  // Handle timer completion and notifications
+  // Handle auto-restart functionality
   useEffect(() => {
-    if (eyeTimer.timeLeft === 0 && eyeTimer.progress === 100) {
-      if (settings.eyeNotifications) {
-        showEyeBreakNotification(settings.soundAlerts);
-      }
-      // Auto-restart if enabled
-      if (settings.autoStart) {
-        setTimeout(() => {
-          eyeTimer.reset(settings.eyeInterval);
-          eyeTimer.start();
-        }, 1000);
-      }
+    if (eyeTimer.timeLeft === 0 && eyeTimer.progress === 100 && settings.autoStart) {
+      setTimeout(() => {
+        eyeTimer.reset(settings.eyeInterval);
+        eyeTimer.start();
+      }, 1000);
     }
-  }, [eyeTimer.timeLeft, eyeTimer.progress, settings.eyeNotifications, settings.soundAlerts, settings.autoStart, showEyeBreakNotification]);
+  }, [eyeTimer.timeLeft, eyeTimer.progress, settings.autoStart, settings.eyeInterval]);
 
   useEffect(() => {
-    if (postureTimer.timeLeft === 0 && postureTimer.progress === 100) {
-      if (settings.postureNotifications) {
-        showPostureNotification(settings.soundAlerts);
-      }
-      // Auto-restart if enabled
-      if (settings.autoStart) {
-        setTimeout(() => {
-          postureTimer.reset(settings.postureInterval);
-          postureTimer.start();
-        }, 1000);
-      }
+    if (postureTimer.timeLeft === 0 && postureTimer.progress === 100 && settings.autoStart) {
+      setTimeout(() => {
+        postureTimer.reset(settings.postureInterval);
+        postureTimer.start();
+      }, 1000);
     }
-  }, [postureTimer.timeLeft, postureTimer.progress, settings.postureNotifications, settings.soundAlerts, settings.autoStart, showPostureNotification]);
+  }, [postureTimer.timeLeft, postureTimer.progress, settings.autoStart, settings.postureInterval]);
 
   return (
     <div className="min-h-screen bg-gray-50">

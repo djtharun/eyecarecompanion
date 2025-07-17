@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { useSettings } from '@/hooks/use-settings';
+import { SoundSettingsModal } from './sound-settings-modal';
+import { Volume2 } from 'lucide-react';
 
 interface SettingsModalProps {
   open: boolean;
@@ -12,6 +15,7 @@ interface SettingsModalProps {
 
 export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
   const { settings, updateSetting, resetSettings } = useSettings();
+  const [soundSettingsOpen, setSoundSettingsOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -98,6 +102,20 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                   onCheckedChange={(checked) => updateSetting('soundAlerts', checked)}
                 />
               </div>
+              
+              <div className="flex items-center justify-between">
+                <Label className="text-sm text-gray-700">Advanced sound settings</Label>
+                <Button
+                  onClick={() => setSoundSettingsOpen(true)}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center space-x-2"
+                >
+                  <Volume2 className="w-4 h-4" />
+                  <span>Configure</span>
+                </Button>
+              </div>
+              
               <div className="flex items-center justify-between">
                 <Label className="text-sm text-gray-700">Auto-start timers</Label>
                 <Switch
@@ -121,6 +139,11 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
           </Button>
         </div>
       </DialogContent>
+      
+      <SoundSettingsModal 
+        open={soundSettingsOpen} 
+        onOpenChange={setSoundSettingsOpen} 
+      />
     </Dialog>
   );
 }

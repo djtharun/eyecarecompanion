@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { Eye, UserCheck } from 'lucide-react';
+import { Eye, UserCheck, Play } from 'lucide-react';
+import { ExerciseVideoPlayer, exerciseLibrary } from './exercise-video-player';
 
 export function ExerciseInstructions() {
-  const [activeTab, setActiveTab] = useState<'eye' | 'posture'>('eye');
+  const [activeTab, setActiveTab] = useState<'eye' | 'posture' | 'videos'>('eye');
+  const [selectedExercise, setSelectedExercise] = useState<string | null>(null);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -29,6 +31,17 @@ export function ExerciseInstructions() {
           >
             <UserCheck className="w-4 h-4" />
             <span>Posture & Neck</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('videos')}
+            className={`px-6 py-4 text-sm font-medium flex items-center space-x-2 ${
+              activeTab === 'videos'
+                ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            <Play className="w-4 h-4" />
+            <span>Guided Exercises</span>
           </button>
         </nav>
       </div>
@@ -158,6 +171,50 @@ export function ExerciseInstructions() {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'videos' && (
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Guided Exercise Videos
+              </h3>
+              
+              {!selectedExercise ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {exerciseLibrary.map((exercise) => (
+                    <button
+                      key={exercise.id}
+                      onClick={() => setSelectedExercise(exercise.id)}
+                      className="text-left p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                    >
+                      <h4 className="font-medium text-gray-900 mb-2">{exercise.title}</h4>
+                      <p className="text-sm text-gray-600 mb-2">{exercise.description}</p>
+                      <div className="text-xs text-blue-600 font-medium">
+                        Duration: {Math.floor(exercise.duration / 60)}:{(exercise.duration % 60).toString().padStart(2, '0')}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <button
+                    onClick={() => setSelectedExercise(null)}
+                    className="mb-4 text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    ← Back to exercise list
+                  </button>
+                  <ExerciseVideoPlayer
+                    exercise={exerciseLibrary.find(e => e.id === selectedExercise)!}
+                    onComplete={() => {
+                      // Handle exercise completion
+                      console.log('Exercise completed!');
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
