@@ -12,6 +12,8 @@ EyeRest is a React-based web application designed to help users maintain healthy
 ✓ Changed settings sliders to 1-minute increments instead of 5-minute steps
 ✓ Added confirmation dialog for timer reset operations
 ✓ Improved timer state management with automatic save/restore functionality
+✓ Added PostgreSQL database with comprehensive schema for users, settings, sessions, and statistics
+✓ Implemented full API endpoints for data persistence and retrieval
 
 ## User Preferences
 
@@ -50,14 +52,18 @@ Preferred communication style: Simple, everyday language.
 6. **Reset Confirmation**: Alert dialog prevents accidental timer resets
 
 ### Server-Side Components
-1. **API Routes**: RESTful endpoints under `/api` prefix
-2. **Storage Interface**: Abstracted storage layer with in-memory implementation
-3. **User Management**: Basic user schema with username/password authentication
-4. **Static File Serving**: Vite integration for development, static serving for production
+1. **API Routes**: RESTful endpoints under `/api` prefix for users, settings, sessions, and statistics
+2. **Storage Interface**: Abstracted storage layer with DatabaseStorage implementation using PostgreSQL
+3. **User Management**: Comprehensive user system with settings, session tracking, and statistics
+4. **Database Layer**: Drizzle ORM with Neon PostgreSQL for data persistence
+5. **Static File Serving**: Vite integration for development, static serving for production
 
 ### Database Schema
-- **Users Table**: id (serial), username (unique text), password (text)
-- **Future Extensions**: Schema designed for easy expansion of user-related features
+- **Users Table**: id (serial), username (unique text), password (text), createdAt (timestamp)
+- **User Settings Table**: id, userId, eyeInterval, postureInterval, notification preferences, updatedAt
+- **Timer Sessions Table**: id, userId, timerType (eye/posture), duration, completed status, timestamps
+- **Daily Stats Table**: id, userId, date, eyeBreaksCompleted, postureChecksCompleted, totalFocusTime
+- **Relations**: Properly defined relationships between users and their data using Drizzle ORM
 
 ## Data Flow
 
