@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { TimerState } from '@/hooks/use-timer';
+import { ResetConfirmationDialog } from '@/components/reset-confirmation-dialog';
 
 interface TimerCardProps {
   title: string;
@@ -16,6 +18,7 @@ interface TimerCardProps {
 }
 
 export function TimerCard({ title, subtitle, icon, timer, color }: TimerCardProps) {
+  const [showResetDialog, setShowResetDialog] = useState(false);
   const timeDisplay = timer.formatTime(timer.timeLeft);
   const nextBreak = timer.getNextBreakTime();
   
@@ -104,7 +107,7 @@ export function TimerCard({ title, subtitle, icon, timer, color }: TimerCardProp
             )}
           </Button>
           <Button
-            onClick={timer.reset}
+            onClick={() => setShowResetDialog(true)}
             variant="outline"
             className="px-4 py-2"
           >
@@ -119,6 +122,13 @@ export function TimerCard({ title, subtitle, icon, timer, color }: TimerCardProp
           </div>
         )}
       </div>
+      
+      <ResetConfirmationDialog
+        open={showResetDialog}
+        onOpenChange={setShowResetDialog}
+        onConfirm={timer.reset}
+        timerName={title.replace(' Timer', '')}
+      />
     </div>
   );
 }

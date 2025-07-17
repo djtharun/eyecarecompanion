@@ -33,9 +33,9 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                   <Slider
                     value={[settings.eyeInterval]}
                     onValueChange={(value) => updateSetting('eyeInterval', value[0])}
-                    min={5}
+                    min={1}
                     max={60}
-                    step={5}
+                    step={1}
                     className="flex-1"
                   />
                   <span className="text-sm font-medium text-gray-900 w-16">
@@ -65,9 +65,9 @@ export function SettingsModal({ open, onOpenChange }: SettingsModalProps) {
                   <Slider
                     value={[settings.postureInterval]}
                     onValueChange={(value) => updateSetting('postureInterval', value[0])}
-                    min={10}
+                    min={1}
                     max={120}
-                    step={5}
+                    step={1}
                     className="flex-1"
                   />
                   <span className="text-sm font-medium text-gray-900 w-16">

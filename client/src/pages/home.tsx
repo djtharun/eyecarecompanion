@@ -15,8 +15,8 @@ export default function Home() {
   const { settings } = useSettings();
   const { showEyeBreakNotification, showPostureNotification } = useNotifications();
   
-  const eyeTimer = useTimer(settings.eyeInterval);
-  const postureTimer = useTimer(settings.postureInterval);
+  const eyeTimer = useTimer(settings.eyeInterval, 'eyerest-eye-timer');
+  const postureTimer = useTimer(settings.postureInterval, 'eyerest-posture-timer');
 
   // Update timer intervals when settings change
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Home() {
   useEffect(() => {
     if (eyeTimer.timeLeft === 0 && eyeTimer.progress === 100) {
       if (settings.eyeNotifications) {
-        showEyeBreakNotification();
+        showEyeBreakNotification(settings.soundAlerts);
       }
       // Auto-restart if enabled
       if (settings.autoStart) {
@@ -41,12 +41,12 @@ export default function Home() {
         }, 1000);
       }
     }
-  }, [eyeTimer.timeLeft, eyeTimer.progress, settings.eyeNotifications, settings.autoStart, showEyeBreakNotification]);
+  }, [eyeTimer.timeLeft, eyeTimer.progress, settings.eyeNotifications, settings.soundAlerts, settings.autoStart, showEyeBreakNotification]);
 
   useEffect(() => {
     if (postureTimer.timeLeft === 0 && postureTimer.progress === 100) {
       if (settings.postureNotifications) {
-        showPostureNotification();
+        showPostureNotification(settings.soundAlerts);
       }
       // Auto-restart if enabled
       if (settings.autoStart) {
@@ -56,7 +56,7 @@ export default function Home() {
         }, 1000);
       }
     }
-  }, [postureTimer.timeLeft, postureTimer.progress, settings.postureNotifications, settings.autoStart, showPostureNotification]);
+  }, [postureTimer.timeLeft, postureTimer.progress, settings.postureNotifications, settings.soundAlerts, settings.autoStart, showPostureNotification]);
 
   return (
     <div className="min-h-screen bg-gray-50">

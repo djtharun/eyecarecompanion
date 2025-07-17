@@ -4,6 +4,15 @@
 
 EyeRest is a React-based web application designed to help users maintain healthy digital habits by providing timers for eye rest breaks and posture checks. The application follows the 20-20-20 rule (every 20 minutes, look at something 20 feet away for 20 seconds) and includes customizable timers, notifications, and exercise instructions.
 
+## Recent Changes (January 17, 2025)
+
+✓ Fixed NaN display error in timer components
+✓ Added sound notifications using Web Audio API
+✓ Added timer persistence across page reloads using localStorage
+✓ Changed settings sliders to 1-minute increments instead of 5-minute steps
+✓ Added confirmation dialog for timer reset operations
+✓ Improved timer state management with automatic save/restore functionality
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -33,11 +42,12 @@ Preferred communication style: Simple, everyday language.
 ## Key Components
 
 ### Client-Side Components
-1. **Timer System**: Dual timers for eye breaks (20 min default) and posture checks (45 min default)
-2. **Notification System**: Browser notifications with permission handling
-3. **Settings Management**: Configurable intervals, notification preferences, and auto-start options
+1. **Timer System**: Dual timers for eye breaks (20 min default) and posture checks (45 min default) with persistence across page reloads
+2. **Notification System**: Browser notifications with permission handling and optional sound alerts using Web Audio API
+3. **Settings Management**: Configurable intervals (1-minute increments), notification preferences, and auto-start options
 4. **Exercise Instructions**: Tabbed interface showing eye exercises and posture tips
 5. **Statistics Tracking**: Local storage-based progress tracking
+6. **Reset Confirmation**: Alert dialog prevents accidental timer resets
 
 ### Server-Side Components
 1. **API Routes**: RESTful endpoints under `/api` prefix
@@ -52,9 +62,10 @@ Preferred communication style: Simple, everyday language.
 ## Data Flow
 
 ### Client State Management
-1. **Timer State**: Custom hooks manage countdown timers with start/stop/reset functionality
+1. **Timer State**: Custom hooks manage countdown timers with start/stop/reset functionality and automatic persistence to localStorage
 2. **Settings Persistence**: localStorage for user preferences and statistics
-3. **Notification Flow**: Permission request → notification display → auto-close after 5 seconds
+3. **Notification Flow**: Permission request → notification display with optional sound → auto-close after 5 seconds
+4. **Timer Persistence**: Automatic save/restore of timer state including elapsed time calculation during page reloads
 
 ### Server-Client Communication
 1. **API Requests**: TanStack Query for server state management
